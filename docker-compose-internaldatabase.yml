@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   ticktoctimerapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: paulkakell/ticktocktimer:v0.1.0-alpha
     container_name: ticktoctimer_app
     ports:
       - "8000:8000"
