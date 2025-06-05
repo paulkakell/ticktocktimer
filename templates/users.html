@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Users</h2>
+<a href="{{ url_for('create_user') }}">Create User</a>
+<table>
+    <tr><th>ID</th><th>Username</th><th>API Key</th><th>Actions</th></tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.api_key }}</td>
+        <td>
+            {% if not user.is_admin %}
+            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+                <input type="submit" value="Delete" onclick="return confirm('Delete user and all timers?');">
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

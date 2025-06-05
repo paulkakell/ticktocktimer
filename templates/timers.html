@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Timers</h2>
+<a href="{{ url_for('create_timer') }}">Create Timer</a>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Type</th><th>Target</th><th>User</th><th>Webhook</th><th>Actions</th></tr>
+    {% for timer in timers %}
+    <tr>
+        <td>{{ timer.id }}</td>
+        <td>{{ timer.name }}</td>
+        <td>{{ timer.timer_type }}</td>
+        <td>{{ timer.target_datetime }}</td>
+        <td>{{ timer.user.username }}</td>
+        <td>{{ timer.webhook_url or '' }}</td>
+        <td>
+            <form action="{{ url_for('delete_timer', timer_id=timer.id) }}" method="post" style="display:inline;">
+                <input type="submit" value="Delete" onclick="return confirm('Delete timer?');">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

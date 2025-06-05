@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  # PostgreSQL service for persistent storage (external DB option)
+  db:
+    image: postgres:14
+    container_name: ticktoctimer_db
+    restart: unless-stopped
+    environment:
+      # These credentials can be overridden by setting EXTERNAL_DB=false in the web service
+      POSTGRES_USER: ticktoctimer
+      POSTGRES_PASSWORD: ticktoctimer_pass
+      POSTGRES_DB: ticktoctimerdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - ticktoctimer_net
+
+  # The Flask‐based TickTock Timer web application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ticktoctimer_web
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"    # Exposes the Flask app on host port 8000
+    environment:
+      # Admin credentials (override at runtime via environment)
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: changeme
+
+      # Toggle between internal (SQLite) and external (PostgreSQL) database
+      # Set EXTERNAL_DB="false" to use the default internal SQLite file.
+      # Set EXTERNAL_DB="true" to connect to the `db` service below.
+      EXTERNAL_DB: "true"
+
+      # Only used if EXTERNAL_DB="true"
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ticktoctimer
+      DB_PASSWORD: ticktoctimer_pass
+      DB_NAME: ticktoctimerdb
+
+      # (Optional) If you want to mount logs or config, you can adjust below
+      # LOG_LEVEL: DEBUG
+      # LOG_FILE: /app/logs/ticktoctimer.log
+
+    volumes:
+      # Mount a local "instance" folder for SQLite database file or config overrides
+      - ./instance:/app/instance
+    networks:
+      - ticktoctimer_net
+
+volumes:
+  db_data:
+
+networks:
+  ticktoctimer_net:
+    driver: bridge

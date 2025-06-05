@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Create Timer</h2>
+<form method="post">
+    <label>Name</label><br>
+    <input type="text" name="name" required><br>
+    <label>User</label><br>
+    <select name="user_id">
+        {% for user in users %}
+        <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+    </select><br>
+    <label>Type</label><br>
+    <select name="timer_type" id="timer_type" onchange="toggleFields()">
+        <option value="duration">Duration</option>
+        <option value="datetime">Date/Time</option>
+    </select><br>
+    <div id="duration_fields">
+        <label>Years</label><input type="number" name="years" value="0"><br>
+        <label>Months</label><input type="number" name="months" value="0"><br>
+        <label>Days</label><input type="number" name="days" value="0"><br>
+        <label>Hours</label><input type="number" name="hours" value="0"><br>
+        <label>Minutes</label><input type="number" name="minutes" value="0"><br>
+        <label>Seconds</label><input type="number" name="seconds" value="0"><br>
+    </div>
+    <div id="datetime_fields" style="display:none;">
+        <label>Target Date/Time (ISO format)</label><br>
+        <input type="datetime-local" name="target_datetime"><br>
+    </div>
+    <label>Webhook URL (optional)</label><br>
+    <input type="url" name="webhook_url"><br><br>
+    <input type="submit" value="Create">
+</form>
+
+<script>
+function toggleFields() {
+    var type = document.getElementById('timer_type').value;
+    document.getElementById('duration_fields').style.display = (type === 'duration') ? 'block' : 'none';
+    document.getElementById('datetime_fields').style.display = (type === 'datetime') ? 'block' : 'none';
+}
+</script>
+{% endblock %}
