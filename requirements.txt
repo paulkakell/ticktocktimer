@@ -1,0 +1,7 @@
+Flask==2.1.1
+SQLAlchemy==2.0.11
+Flask-SQLAlchemy==2.5.1
+Flask-HTTPAuth==4.7.0
+psycopg2==2.9.3
+requests==2.27.1
+python-dotenv==0.19.2
